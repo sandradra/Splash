@@ -19,6 +19,7 @@ public class LaunchScene extends MyScene{
 	public static final String PLAY_BUTTON = "resources/images/play_button.png";
 	public static final String SCORES_BUTTON = "resources/images/scores_button.png";
 	
+	
 	@Override
 	// TODO handle fileNotFoundException
 	public Scene createScene() throws FileNotFoundException {
@@ -31,13 +32,40 @@ public class LaunchScene extends MyScene{
 
 	public HBox getPlayAndScoresHBox() throws FileNotFoundException {
 		
-		// create HBox to store buttons "Play" and "Scores"
+		/*
+		 *  create HBox to store buttons "Play" and "Scores"
+		 */
 		HBox playAndScores = new HBox(COVER_WIDTH * 0.2);
 		playAndScores.setPadding(new Insets(COVER_HEIGHT * 0.825, COVER_WIDTH * 0.15, COVER_HEIGHT * 0.125, COVER_WIDTH * 0.15));
 		Image playButton   = new Image(new FileInputStream(PLAY_BUTTON));
 		Image scoresButton = new Image(new FileInputStream(SCORES_BUTTON));
-		playAndScores.getChildren().add(new Button("", new ImageView(playButton)));
-		playAndScores.getChildren().add(new Button("", new ImageView(scoresButton)));
+		
+		
+		/*
+		 *  set-up "Play" button
+		 */
+		Button playGame = new Button("", new ImageView(playButton));
+		playGame.setOnMouseClicked(event -> {
+			// TODO change to play game scene OR create game event
+			System.out.println("Play is clicked");
+			
+			
+		});
+		playAndScores.getChildren().add(playGame);
+		
+		
+		/*
+		 *  set-up "Scores" button
+		 */
+		Button checkScores = new Button("", new ImageView(scoresButton));
+		checkScores.setOnMouseClicked(event -> {
+			// TODO build new scene leaderboard
+			System.out.println("Scores is clicked");
+			
+			
+		});
+		playAndScores.getChildren().add(checkScores);
+		
 		return playAndScores;
 
 	}
