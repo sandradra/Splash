@@ -1,7 +1,8 @@
+package characters;
 
 import javafx.scene.image.Image;
 
-public class Character {
+public abstract class Character {
 	protected int x, y, width, height;
 	protected Image icon;
 	
@@ -45,20 +46,8 @@ public class Character {
 		return this.icon;
 	}
 	
-	// check if two characters are in the same place
-	public boolean checkHit(Character character) {
-		if ( this.)
-	}
+	// check if two characters collide with each other
+//	public abstract boolean checkHit(Character character);
 	
-	
-	public boolean equals(Character obj)
-	{
-		Character other = obj;
-		if(getX()+getWidth()>=other.getX()&&
-			getX()<=other.getX()+other.getWidth() &&
-			getY()+getHeight() >=other.getY() &&
-			getY() <= other.getY()+other.getHeight())
-		   return true;
-		return false;
-	}
+
 }
