@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 
 public class LeaderboardScene extends MyScene{
 
@@ -26,6 +27,7 @@ public class LeaderboardScene extends MyScene{
 		BorderPane leaderboardPane = new BorderPane();
 		leaderboardPane.getChildren().add(MyScene.readImage(LEADERBOARD_IMAGE));
 		leaderboardPane.setTop(getBack());
+		leaderboardPane.setCenter(this.createLeaderList());
 		Scene leaderboardScene = new Scene(leaderboardPane, COVER_WIDTH, COVER_HEIGHT);
 		return leaderboardScene;
 		
@@ -47,7 +49,22 @@ public class LeaderboardScene extends MyScene{
 			
 		});
 		
-		
 		return back;
+	}
+	
+	public Pane createLeaderList() {
+		
+		BorderPane leaderListPane = new BorderPane();
+		// read file 
+		// create person array from file
+		
+		
+		
+		return leaderListPane;
+	}
+	
+	// write scores on text files
+	public void recordScores() {
+		
 	}
 }
