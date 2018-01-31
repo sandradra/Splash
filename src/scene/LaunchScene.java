@@ -60,7 +60,6 @@ public class LaunchScene extends MyScene{
 		Button checkScores = new Button("", new ImageView(scoresButton));
 		checkScores.setOnMouseClicked(event -> {
 			// TODO build new scene leaderboard
-			System.out.println("Scores is clicked");
 			
 			
 		});

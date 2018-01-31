@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 import scene.LaunchScene;
+import scene.LeaderboardScene;
 import scene.MyScene;
 
 public class Driver extends Application {
@@ -33,6 +34,7 @@ public class Driver extends Application {
 		
 		
 		MyScene launchScene = new LaunchScene();
+		MyScene leaderboardScene = new LeaderboardScene();
 
 		primaryStage.setTitle(GAME_TITLE); 
 		primaryStage.setResizable(false);
