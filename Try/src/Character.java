@@ -6,17 +6,17 @@ public abstract class Character{
 
     Image image;
     ImageView imageView;
-
     Pane layer;
-    
     double x, y, dx, dy, w, h;
 
-    public Character(Pane layer, Image image, double x, double y, double dx, double dy) {
+    public Character(Pane layer,Image image, double x, double y, double dx, double dy) {
 
         this.layer = layer;
         this.image = image;
+        
         this.x = x;
         this.y = y;
+        
         this.dx = dx;
         this.dy = dy;
 
@@ -27,6 +27,18 @@ public abstract class Character{
         this.h = image.getHeight();
        
         addToLayer();
+    }
+    
+    public Character(Pane layer) {
+    		this.layer = layer;
+    		
+        this.imageView = new ImageView(image);
+        this.imageView.relocate(x, y);
+
+        this.w = image.getWidth(); 
+        this.h = image.getHeight();
+       
+        addToLayer();  		
     }
 
     public void addToLayer() {
@@ -77,7 +89,7 @@ public abstract class Character{
         this.dy = dy;
     }
 
-    public void move() {
+    public void move(int dx, int dy) {
         x += dx;
         y += dy;
     }
@@ -98,18 +110,17 @@ public abstract class Character{
         return h;
     }
 
-    public double getCenterX() {
-        return x + w * 0.5;
-    }
+//    public double getCenterX() {
+//        return x + w * 0.5;
+//    }
+//
+//    public double getCenterY() {
+//        return y + h * 0.5;
+//    }
 
-    public double getCenterY() {
-        return y + h * 0.5;
-    }
+    public boolean collidesWith( Character other) {
 
-    // TODO: per-pixel-collision
-    public boolean collidesWith( Character otherSprite) {
-
-        return ( otherSprite.x + otherSprite.w >= x && otherSprite.y + otherSprite.h >= y && otherSprite.x <= x + w && otherSprite.y <= y + h);
+        return ( other.x + other.w >= x && other.y + other.h >= y && other.x <= x + w && other.y <= y + h);
 
     }
 

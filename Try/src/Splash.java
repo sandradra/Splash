@@ -1,21 +1,13 @@
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 
-public class Splash extends Character {
+public class Splash {
 
     double playerShipMinX, playerShipMaxX, playerShipMinY, playerShipMaxY;
 
     public Splash(Pane layer, Image image, double x, double y, double dx, double dy) {
-        super(layer, image, x, y, dx, dy);
-    }
+ 
+    }    
 
-    private void init() {
-
-    }
-    
-    @Override
-    public void move() {
-
-    }
 
 }
