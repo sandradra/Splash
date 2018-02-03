@@ -23,10 +23,11 @@ import javafx.util.Duration;
 
 public class Main extends Application {
 	Whale whale;
-	ArrayList<Rubbish> rubbish = new ArrayList<Rubbish>(); 
+	ArrayList<Rubbish> rubbish = new ArrayList<Rubbish>();
 	ArrayList<Seaweed> seaweed = new ArrayList<Seaweed>();
-	ArrayList<Splash> splash = new ArrayList<Splash>();
-	Image whaleImage, rubbishImage, seaweedImage,splashImage;  
+	//ArrayList<Splash> splash = new ArrayList<Splash>();
+	Splash splash;
+	Image whaleImage, rubbishImage, seaweedImage,splashImage;
 	ImageView bgImage;
 	int score, createSeaweed;
 	Random r = new Random();
@@ -44,12 +45,12 @@ public class Main extends Application {
 
 		theScene = new Scene(group,475,600);
 		theStage.setTitle( "Splash!");
-		theStage.setScene(theScene);        
+		theStage.setScene(theScene);
 		theStage.show();
-		
+
 		rubbish.add(createRubbish());
 		for (int i = 0; i<12; i++) {seaweed.add(createSeaweed());}
-		whale = createWhale(); 
+		whale = createWhale();
 
 		EventHandler<ActionEvent> eventHandler = e -> {
 			moveWhaleOnKeyPress(theScene);
@@ -57,11 +58,11 @@ public class Main extends Application {
 
 		Timeline animation = new Timeline(new KeyFrame(Duration.millis(500), eventHandler));
 		animation.setCycleCount(Timeline.INDEFINITE);
-		animation.play(); 
+		animation.play();
 
-	}	
+	}
 
-	public Whale createWhale() {		
+	public Whale createWhale() {
 		whaleImage = new Image("images/whaleL.png");
 	    double x = (475 - whaleImage.getWidth()) / 2.0;
 	    double y = (600 * 0.85);
@@ -70,62 +71,63 @@ public class Main extends Application {
 	}
 
 	public Rubbish createRubbish() {
-		rubbishImage = new Image("images/rub1.png");		
-	    double x = (double)(r.nextInt(250) + 5); 
+		rubbishImage = new Image("images/rub1.png");
+	    double x = (double)(r.nextInt(250) + 5);
         double y = (double)(r.nextInt(250) + 100);  // set range
 		Rubbish r = new Rubbish( gamePane, rubbishImage, x,y, 0.0, 0.0);
 		return r;
 	}
-	
+
 	public Seaweed createSeaweed() {
 		seaweedImage = new Image("images/platform.png");
-		double x = (double)(r.nextInt(350) + 50); 
-		double y = (double)(r.nextInt(450)); 
+		double x = (double)(r.nextInt(350) + 50);
+		double y = (double)(r.nextInt(450));
 		Seaweed s = new Seaweed(gamePane, seaweedImage,x,y,0,0);
 		return s;
 	}
-	
+
 	public void createSplash() {
 		splashImage = new Image("images/Splash.png");
-		splash.add(new Splash(gamePane, splashImage, whale.getCenterX(), whale.getCenterY(), 0.0, 1.0));
+	//	splash.add(new Splash(gamePane, splashImage, whale.getCenterX()-whale.w*0.5, (whale.getCenterY()-whale.h*0.5)-10, 0.0, 1.0));
+		splash = new Splash(gamePane, splashImage, whale.getCenterX()-whale.w*0.5, (whale.getCenterY()-whale.h*0.5)-10, 0.0, 1.0);
 	}
 
 	public void moveWhaleOnKeyPress(Scene scene) {
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override public void handle(KeyEvent event) {
 				switch (event.getCode()) {
-				case UP: 
-				whale.move(0,-20);
-				whale.updateUI();						
-				loopBg();
-			    checkhitRubbish();
-			    break;
-				case LEFT: 
-				whale.move(-20,0);
-				whale.updateUI();	
-				checkhitRubbish();
-				break;
-				case RIGHT: 
-				whale.move(20,0);
-				whale.updateUI();	
-				checkhitRubbish();
-				break;
+				case UP:
+					whale.move(0,-20);
+					whale.updateUI();
+					loopBg();
+				    checkhitRubbish();
+				    break;
+				case LEFT:
+					whale.move(-20,0);
+					whale.updateUI();
+					checkhitRubbish();
+					break;
+				case RIGHT:
+					whale.move(20,0);
+					whale.updateUI();
+					checkhitRubbish();
+					break;
 				case DOWN:
-				whale.move(0,20);
-				whale.updateUI();	
-				checkhitRubbish();	
-				break;
-				case SPACE: 
+					whale.move(0,20);
+					whale.updateUI();
+					checkhitRubbish();
+					break;
+				case SPACE:
 				createSplash();
-					
+				shoot();
 				break;
 				}
 			}
 		});
 	}
-	
+
 	public void loopBg() {
-	    if (whale.y <= 150) { 
+	    if (whale.y <= 150) {
 	  	      whale.setY(400);
 	    	Iterator it;
 	    	it = seaweed.iterator();
@@ -145,19 +147,30 @@ public class Main extends Application {
 	    }
 	    createSeaweed = 0;
 	}
-	
+
 	public void checkhitRubbish() {
 	    if (whale.checkHitRubbish(rubbish)) {
 	    	rubbish.add(createRubbish());
 	    		score += 50;
 	    		System.out.println(score);
-	    }	
+	    }
 	}
-	
-	public void shoot() {
 
+	public void shoot() {
+		EventHandler<ActionEvent> eventHandler = e -> {
+			if (splash.y > -10) {
+			splash.move(0, -100);
+			splash.updateUI();
+			splash.checkHitRubbish(rubbish);
+			checkhitRubbish();
+		System.out.println(splash.y);
+			}
+			};
+		Timeline shoot = new Timeline(new KeyFrame(Duration.millis(500), eventHandler));
+		shoot.setCycleCount(Timeline.INDEFINITE);
+		shoot.play();
 	}
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
