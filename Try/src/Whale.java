@@ -12,6 +12,14 @@ public class Whale extends Character {
         super.move(dx,dy); 
     }
 
+    public double getWhaleX() {
+    		return x;
+    }
+    
+    public double getWhaleY() {
+		return y;
+    }
+    
 	public int checkHitPlatform(Seaweed[] seaweed, int score) {	
 		boolean hit;
 		for (Seaweed i:seaweed) {
