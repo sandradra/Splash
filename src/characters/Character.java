@@ -1,53 +1,127 @@
 package characters;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 
-public abstract class Character {
-	protected int x, y, width, height;
-	protected Image icon;
+public abstract class Character{
 	
-	public void setX(int x) {
-		this.x = x;
-	}
-	
-	public void setY(int y) {
-		this.y = y;
-	}
-	
-	public void setWidth(int width) {
-		this.width = width;
-	}
-	
-	public void setHeight(int height) {
-		this.height = height;
-	}
-	
-	public void setIcon(Image icon) {
-		this.icon = icon;
-	}
-	
-	public int getX() {
-		return this.x;
-	}
-	
-	public int getY() {
-		return this.y;
-	}
-	
-	public int getWidth() {
-		return this.width;
-	}
-	
-	public int getHeight() {
-		return this.height;
-	}
-	
-	public Image getIcon() {
-		return this.icon;
-	}
-	
-	// check if two characters collide with each other
-//	public abstract boolean checkHit(Character character);
-	
+    Image image;
+    ImageView imageView;
+    Pane layer;
+    public double x, y, dx, dy, w, h;
+
+    public Character(Pane layer,Image image, double x, double y, double dx, double dy) {
+
+        this.layer = layer;
+        this.image = image;
+        
+        this.x = x;
+        this.y = y;
+        
+        this.dx = dx;
+        this.dy = dy;
+
+        this.imageView = new ImageView(image);
+        this.imageView.relocate(x, y);
+
+        this.w = image.getWidth(); 
+        this.h = image.getHeight();
+       
+        addToLayer();
+    }
+    
+    public Character(Pane layer) {
+    		this.layer = layer;
+    		
+        this.imageView = new ImageView(image);
+        this.imageView.relocate(x, y);
+
+        this.w = image.getWidth(); 
+        this.h = image.getHeight();
+       
+        addToLayer();  		
+    }
+
+    public void addToLayer() {
+        this.layer.getChildren().add(this.imageView);
+    }
+
+    public void removeFromLayer() {
+        this.layer.getChildren().remove(this.imageView);
+    }
+
+//    public Pane getLayer() {
+//        return layer;
+//    }
+//
+//    public void setLayer(Pane layer) {
+//        this.layer = layer;
+//    }
+
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public double getDx() {
+        return dx;
+    }
+
+    public void setDx(double dx) {
+        this.dx = dx;
+    }
+
+    public double getDy() {
+        return dy;
+    }
+
+    public void setDy(double dy) {
+        this.dy = dy;
+    }
+
+    public void move(int dx, int dy) {
+        x += dx;
+        y += dy;
+    }
+
+    public ImageView getView() {
+        return imageView;
+    }
+
+    public void updateUI() {
+        imageView.relocate(x, y);
+    }
+
+    public double getWidth() {
+        return w;
+    }
+
+    public double getHeight() {
+        return h;
+    }
+
+    public double getCenterX() {
+        return x + w * 0.5;
+    }
+
+    public double getCenterY() {
+        return y + h * 0.5;
+    }
+
+    public boolean collidesWith( Character other) {
+        return ( other.x + other.w >= x && other.y + other.h >= y && other.x <= x + w && other.y <= y + h);
+    }
 
 }

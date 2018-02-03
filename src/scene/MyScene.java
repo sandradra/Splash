@@ -22,11 +22,9 @@ public abstract class MyScene {
 	public static final String CLICKED_RANK_BUTTON = "clicked_rank_button";
 	public static final String CLICKED_HOME_BUTTON = "clicked_home_button";
 	
-
-	
+	public static final String LEADERBOARD_IMAGE = "resources/page/leaderboard_page.png";
 	public static final String SCORE_FILE = "resources/scores/leader_list.txt";
 	public static final String HOBO_FONT_TYPE = "file:resources/font/Hobo-Std-Medium.ttf";
-	public static final String LEADERBOARD_IMAGE = "resources/page/leaderboard_page.png";
 	
 	protected Scene scene;
 	protected Map<String, EventEmitter<Object>> emitterMap;
@@ -72,8 +70,6 @@ public abstract class MyScene {
 	public EventEmitter<Object> getEventEmitter(String key) {
 		return this.emitterMap.containsKey(key) ? this.emitterMap.get(key) : null;
 	}
-	
-	
 	
 	
 }

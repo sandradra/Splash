@@ -17,7 +17,6 @@ public class Driver extends Application {
 
 
 	public static final String GAME_TITLE = "Let's Splash!";
-
 	public static final String BACKGROUND_MUSIC = "resources/sounds/home.wav";
 	
 	@Override
@@ -63,30 +62,8 @@ public class Driver extends Application {
 		primaryStage.setScene(launchScene.getScene()); // Place the scene in the stage
 		primaryStage.show(); 
 		
-		
-//		ImageView introImage =  new ImageView("images/bg-grid.png");  
-//		Button btStart = new Button("",new ImageView("images/doodleR.png"));
-//		Button btRecord = new Button("",new ImageView("images/doodleS.png"));  
-//		Group mainScreen = new Group(introImage,btStart,btRecord);
-//		Scene scene = new Scene(mainScreen, 500, 200);
-//		theStage.setTitle("Splash!"); 
-//		theStage.setScene(scene);
-//		theStage.show();
-		
-		//whale 60* 49
-		//seaweed 68*20
 	}
 	
-	//  public void displayScore() {
-	//   AudioClip introMusic =  new AudioClip("music/introMusic.mp3");
-	//   introMusic.play();
-	//   ImageView scoreImage =  new ImageView("image/ScoreImage.jpg");  
-	//   Button btBack = new Button("",new ImageView("image/back.jpg"));
-	//   StackPane pane = new StackPane();
-	//   pane.getChildren().addAll(scoreImage,btBack);   
-	//  }
-
-			
 	public static void main(String[] args) {
 		launch(args);
 	}
