@@ -57,6 +57,7 @@ public class Game{
 		return this.gameOver;
 	}
 
+	// display end game score and end game page (dra)
 	public void endGame() {
 		//this.score = whale.getScore();
 		//this.playerName = JOptionPane.showInputDialog(null, "Please enter your name", "Recording Player Name", JOptionPane.QUESTION_MESSAGE);
