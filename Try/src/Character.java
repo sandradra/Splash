@@ -3,7 +3,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
 public abstract class Character{
-
+	
     Image image;
     ImageView imageView;
     Pane layer;
@@ -49,13 +49,13 @@ public abstract class Character{
         this.layer.getChildren().remove(this.imageView);
     }
 
-    public Pane getLayer() {
-        return layer;
-    }
-
-    public void setLayer(Pane layer) {
-        this.layer = layer;
-    }
+//    public Pane getLayer() {
+//        return layer;
+//    }
+//
+//    public void setLayer(Pane layer) {
+//        this.layer = layer;
+//    }
 
     public double getX() {
         return x;
@@ -110,18 +110,16 @@ public abstract class Character{
         return h;
     }
 
-//    public double getCenterX() {
-//        return x + w * 0.5;
-//    }
-//
-//    public double getCenterY() {
-//        return y + h * 0.5;
-//    }
+    public double getCenterX() {
+        return x + w * 0.5;
+    }
+
+    public double getCenterY() {
+        return y + h * 0.5;
+    }
 
     public boolean collidesWith( Character other) {
-
         return ( other.x + other.w >= x && other.y + other.h >= y && other.x <= x + w && other.y <= y + h);
-
     }
 
 }

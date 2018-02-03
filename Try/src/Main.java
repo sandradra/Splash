@@ -8,13 +8,17 @@ import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.scene.input.KeyEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.event.ActionEvent;
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
+
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import javafx.util.Duration;
 
 public class Main extends Application {
@@ -22,14 +26,9 @@ public class Main extends Application {
 	ArrayList<Rubbish> rubbish = new ArrayList<Rubbish>(); 
 	ArrayList<Seaweed> seaweed = new ArrayList<Seaweed>();
 	ArrayList<Splash> splash = new ArrayList<Splash>();
-	int score = 0;
-	Image whaleImage; 
-	Image rubbishImage;
-	Image seaweedImage;
-	Image splashImage;  
+	Image whaleImage, rubbishImage, seaweedImage,splashImage;  
 	ImageView bgImage;
-	int createRubbish = 0;
-	int createSeaweed = 0;
+	int score, createSeaweed;
 	Random r = new Random();
 	Pane gamePane;
 	Scene theScene;
@@ -58,20 +57,9 @@ public class Main extends Application {
 
 		Timeline animation = new Timeline(new KeyFrame(Duration.millis(500), eventHandler));
 		animation.setCycleCount(Timeline.INDEFINITE);
-		animation.play(); 		
+		animation.play(); 
+
 	}	
-	
-	public void loadGame() {
-		AnimationTimer bgLoop = new AnimationTimer() {
-			public void handle(long l) {
-				for (Seaweed i:seaweed) {
-					i.y = ((i.h)+200);
-					i.updateUI();
-				}	
-			}
-	        };
-	        bgLoop.start();
-	}
 
 	public Whale createWhale() {		
 		whaleImage = new Image("images/whaleL.png");
@@ -96,32 +84,47 @@ public class Main extends Application {
 		Seaweed s = new Seaweed(gamePane, seaweedImage,x,y,0,0);
 		return s;
 	}
+	
+	public void createSplash() {
+		splashImage = new Image("images/Splash.png");
+		splash.add(new Splash(gamePane, splashImage, whale.getCenterX(), whale.getCenterY(), 0.0, 1.0));
+	}
 
 	public void moveWhaleOnKeyPress(Scene scene) {
-		KeyListener keylistener = new KeyListener();
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override public void handle(KeyEvent event) {
 				switch (event.getCode()) {
-				case UP: createRubbish = keylistener.upKey(whale, rubbish,seaweed, score);
-				seaweed = loopBg();		
-			    for (int i = 0; i< createRubbish; i++) {
-			    	rubbish.add(createRubbish());
-			    }
-			    createRubbish = 0;
-			    for (int i = 0; i<createSeaweed; i++) {
-			    	seaweed.add(createSeaweed());
-			    }
-			    createSeaweed = 0;
+				case UP: 
+				whale.move(0,-20);
+				whale.updateUI();						
+				loopBg();
+			    checkhitRubbish();
 			    break;
-				case LEFT: score = keylistener.leftKey(whale, rubbish, score);break;
-				case RIGHT: score = keylistener.rightKey(whale, rubbish, score);break;
-				case SPACE: break;
+				case LEFT: 
+				whale.move(-20,0);
+				whale.updateUI();	
+				checkhitRubbish();
+				break;
+				case RIGHT: 
+				whale.move(20,0);
+				whale.updateUI();	
+				checkhitRubbish();
+				break;
+				case DOWN:
+				whale.move(0,20);
+				whale.updateUI();	
+				checkhitRubbish();	
+				break;
+				case SPACE: 
+				createSplash();
+					
+				break;
 				}
 			}
 		});
 	}
 	
-	public ArrayList<Seaweed> loopBg() {
+	public void loopBg() {
 	    if (whale.y <= 150) { 
 	  	      whale.setY(400);
 	    	Iterator it;
@@ -137,7 +140,22 @@ public class Main extends Application {
 	    	  	}
 	      }
 	    }
-	    return seaweed;
+	    for (int i = 0; i<createSeaweed; i++) {
+	    	seaweed.add(createSeaweed());
+	    }
+	    createSeaweed = 0;
+	}
+	
+	public void checkhitRubbish() {
+	    if (whale.checkHitRubbish(rubbish)) {
+	    	rubbish.add(createRubbish());
+	    		score += 50;
+	    		System.out.println(score);
+	    }	
+	}
+	
+	public void shoot() {
+
 	}
 	
 	public static void main(String[] args) {
