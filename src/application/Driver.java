@@ -1,6 +1,5 @@
 package application;
 import java.io.File;
-import java.net.URL;
 
 import javafx.application.Application;
 import javafx.scene.media.Media;
@@ -44,6 +43,15 @@ public class Driver extends Application {
 		
 		leaderboardScene.getEventEmitter(LeaderboardScene.CLICKED_HOME_BUTTON)
 		  .subscribe(event -> primaryStage.setScene(launchScene.getScene()));
+		
+		startGameScene.getEventEmitter(StartGameScene.GAME_OVER)
+		  .subscribe(score -> { System.out.println("Driver.start()");
+			  ((EndGameScene) endGameScene).setScore((int) score);
+			  System.out.println("setscore");
+			  primaryStage.setScene(endGameScene.getScene());
+			  System.out.println("create endgame scene");
+		  });
+		
 		
 		endGameScene.getEventEmitter(LeaderboardScene.CLICKED_HOME_BUTTON)
 		.subscribe(event -> primaryStage.setScene(launchScene.getScene()));

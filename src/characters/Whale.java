@@ -1,6 +1,7 @@
 package characters;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import javafx.animation.Animation.Status;
@@ -9,10 +10,12 @@ import javafx.animation.Timeline;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import util.EventEmitter;
 
 public class Whale extends Character {
 
-	private Timeline jump, fall, left, right;
+	public Timeline jump, fall, left, right;
+	private EventEmitter<Whale> moveEmitter = new EventEmitter<Whale>();
 
 	public Whale(Pane layer, Image image, double x, double y, double dx, double dy) {
 		super(layer, image, x,y, dx, dy);
@@ -23,14 +26,16 @@ public class Whale extends Character {
 		}));
 		jump.setCycleCount(20);
 
+
 		fall = new Timeline(new KeyFrame(Duration.millis(20), actionEvent -> {
 			move(0, 10);
 			updateUI();
 		}));
-		fall.setCycleCount(20);
+		fall.setCycleCount(60); // original 20
+
 
 		left = new Timeline(new KeyFrame(Duration.millis(20), actionEvent -> {
-			if (this.x > 5 ) {
+			if (this.x > 5) {
 				move(-5,0);
 				updateUI();
 			}
@@ -38,7 +43,7 @@ public class Whale extends Character {
 		left.setCycleCount(Timeline.INDEFINITE);
 
 		right = new Timeline(new KeyFrame(Duration.millis(20), actionEvent -> {
-			if (this.x < (COVER_WIDTH - this.w - 5)){
+			if (this.x < (COVER_WIDTH - this.w / 2)){
 				move(5, 0);
 				updateUI();
 			}
@@ -50,7 +55,10 @@ public class Whale extends Character {
 
 	@Override
 	public void move(int dx, int dy) {
+		System.out.println("Whale.move()");
 		super.move(dx,dy); 
+		moveEmitter.emit(this);
+		
 	}
 
 	public double getWhaleX() {
@@ -97,6 +105,14 @@ public class Whale extends Character {
 		}
 	}
 
+	public void stopjump() {
+		jump.stop();
+	}
+	
+	public void stopFall() {
+		fall.stop();
+	}
+	
 	public void left() {
 		left.play();
 	}
@@ -111,6 +127,45 @@ public class Whale extends Character {
 
 	public void stopRight() {
 		right.stop();
+	}
+
+	public EventEmitter<Whale> getMoveEmitter() {
+		return this.moveEmitter;
+	}
+
+	public boolean checkWhaleInScreen() {
+		return y < (COVER_HEIGHT + h/2);
+	}
+
+	// override collidesWith function exclusively for checking the collision between whale and platforms to cater for the whale tail
+	@Override
+	public boolean collidesWith(Character other) {
+		return (other.x + other.w >= x && other.y + other.h >= y && other.x <= x + w / 2 && other.y <= y + h);
+	}
+
+	// if whale collides with seaweeds, the whale will stay on top of seaweeds
+	public void checkHittedSeaweed(ArrayList<Seaweed> seaweeds) {
+		for (Seaweed seaweed: seaweeds) {
+			if (this.collidesWith(seaweed)){
+				stopFall();
+				break;
+			}
+		}
+	}
+
+	// find the list of seaweeds with y coordinate lower than whale
+	public ArrayList<Seaweed> findSeaweedBelowWhale(ArrayList<Seaweed> seaweeds, Whale whale) {
+
+		ArrayList<Seaweed> seaweedsBelowWhale = new ArrayList<Seaweed>();
+
+		for (int i = 0; i < seaweeds.size(); i++) {
+			if ((seaweeds.get(i).y - seaweeds.get(i).h) > whale.y ) {
+				seaweedsBelowWhale.add(seaweeds.get(i));
+			}
+		}
+		Collections.sort(seaweedsBelowWhale);
+
+		return seaweedsBelowWhale;
 	}
 
 

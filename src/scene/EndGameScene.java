@@ -26,9 +26,9 @@ public class EndGameScene extends MyScene {
 	public static final String END_GAME_IMAGE = "resources/page/end_game_page.png";
 	public static final String HOME_BUTTON = "resources/button/home_button_white.png";
 	
-	private int score = 0;
-
-	// TODO look for player score 
+	public int score = 0;
+	
+	// TODO calculate player score 
 	public void setScore(int score) {
 		this.score = score;
 	}
@@ -46,7 +46,12 @@ public class EndGameScene extends MyScene {
 		endGamePane.getChildren().add(MyScene.readImage(END_GAME_IMAGE));
 		List<Person> persons = LeaderboardScene.createLeadersFromFile(new File(SCORE_FILE));
 		writeNameAndScores(persons, score);
-		endGamePane.getChildren().add(displayScore(score));
+		
+		Text scoreText = displayScore(score);
+		scoreText.setTranslateX(COVER_WIDTH / 4);
+		scoreText.setTranslateY(-5);
+		
+		endGamePane.getChildren().add(scoreText);
 		endGamePane.getChildren().add(getHomeAndRankHBox());
 		
 		Scene endGameScene = new Scene(endGamePane, COVER_WIDTH, COVER_HEIGHT);
@@ -82,7 +87,6 @@ public class EndGameScene extends MyScene {
 	public void writeNameAndScores(List<Person> persons, int score) {
 
 		
-//		String name = JOptionPane.showInputDialog("Well done! Please enter your name: ");
 		TextInputDialog dialog = new TextInputDialog("your name");
 		dialog.setTitle("Splash");
 		dialog.setHeaderText("Well done!");
@@ -128,8 +132,8 @@ public class EndGameScene extends MyScene {
 	
 	public Text displayScore(int score) {
 		
-		Text scoreText = new Text(COVER_WIDTH * 0.8, COVER_HEIGHT / 2, String.valueOf(score));
-		scoreText.setFont(Font.loadFont(HOBO_FONT_TYPE, 30));
+		Text scoreText = new Text(0, 0, String.valueOf(score));
+		scoreText.setFont(Font.loadFont(HOBO_FONT_TYPE, 35));
 		scoreText.setFill(Color.rgb(26, 173, 204));
 		return scoreText;
 	}

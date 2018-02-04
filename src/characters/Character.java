@@ -123,8 +123,12 @@ public abstract class Character{
         return y + h * 0.5;
     }
 
-    public boolean collidesWith( Character other) {
+    public boolean collidesWith(Character other) {
         return ( other.x + other.w >= x && other.y + other.h >= y && other.x <= x + w && other.y <= y + h);
     }
+
+	public int compareTo(Character other) {
+		return 0;
+	}
 
 }

@@ -64,10 +64,7 @@ public abstract class MyScene {
 	}
 	
 	public Scene getScene() {
-		if (scene == null) {
-			scene = createScene();
-		}
-		
+		scene = createScene();
 		return scene;
 	}
 	
