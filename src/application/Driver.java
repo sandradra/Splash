@@ -23,14 +23,12 @@ public class Driver extends Application {
 	public void start(Stage primaryStage) {
 		
 		// play background music once application is launched
-		Media backgroundMusic =  new Media(new File(BACKGROUND_MUSIC).toURI().toString());
+		Media backgroundMusic   = new Media(new File(BACKGROUND_MUSIC).toURI().toString());
 		MediaPlayer mediaPlayer = new MediaPlayer(backgroundMusic);
-		mediaPlayer.setOnEndOfMedia(new Runnable() {
-			public void run() { mediaPlayer.seek(Duration.ZERO); }
-		});
+		mediaPlayer.setOnEndOfMedia(new Runnable() { public void run() { mediaPlayer.seek(Duration.ZERO); }} );
 		mediaPlayer.play();
 
-		// create different scenes
+		// create scenes
 		MyScene launchScene      = new LaunchScene();
 		MyScene leaderboardScene = new LeaderboardScene();
 		MyScene startGameScene   = new StartGameScene();
