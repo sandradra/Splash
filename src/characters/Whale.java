@@ -62,14 +62,13 @@ public class Whale extends Character {
 	}
 
 
-	public boolean checkHitPlatform(Seaweed[] seaweed, int score) {	
-		boolean hit = false;
+	public boolean checkHitPlatform(ArrayList<Seaweed> seaweed) {	
+		boolean hit= true;
 		for (Seaweed i:seaweed) {
 			hit = this.collidesWith(i);
 			if (hit = false) {
 				System.out.println("Game Over!");
 			}else {
-				score += 20;
 			}
 		}
 		return hit;

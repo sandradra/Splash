@@ -1,22 +1,27 @@
 package scene;
 
 import java.util.Random;
-//import javax.swing.text.html.HTMLDocument.Iterator;
 import java.util.Iterator;
+
 import characters.Rubbish;
 import characters.Seaweed;
 import characters.Splash;
 import characters.Whale;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.Group;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.scene.input.KeyEvent;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +29,7 @@ import java.util.Collections;
 import javafx.util.Duration;
 import scene.MyScene;
 
-public class StartGameScene extends MyScene {
+public class StartGameScene extends MyScene{
 
 	// define image paths
 	public static final String GAME_BACKGROUND = "resources/page/game_background.png";
@@ -38,9 +43,11 @@ public class StartGameScene extends MyScene {
 	ArrayList<Seaweed> seaweeds  = new ArrayList<Seaweed>();
 	ArrayList<Splash> splash  = new ArrayList<Splash>();
 	Image whaleImage, rubbishImage, seaweedImage, splashImage;
-	ImageView bgImage;
+	ImageView bgImage, bgImage1;
 	int score, numberOfSeaweedRemoved;
 	Random random = new Random();
+    Label label = new Label();
+    HBox hBox = new HBox();
 	Pane gamePane;
 	Scene theScene;
 	Timeline shoot;
@@ -49,9 +56,11 @@ public class StartGameScene extends MyScene {
 	public Scene createScene() {
 
 		Group group = new Group();
-		gamePane    = new Pane();
+		gamePane   = new Pane();
 		bgImage = readImage(GAME_BACKGROUND);
-		gamePane.getChildren().add(bgImage);
+		//String record = "YOUR SCORE:";
+		label.setFont(Font.font("Cambria", 32));
+		gamePane.getChildren().addAll(bgImage,label);
 		group.getChildren().addAll(gamePane);
 
 		theScene = new Scene(group, COVER_WIDTH, COVER_HEIGHT);
@@ -61,7 +70,6 @@ public class StartGameScene extends MyScene {
 		rubbishes.add(createRubbish());
 		seaweeds = createSeaweeds(seaweeds);
 		whale    = createWhale();
-
 		moveWhaleOnKeyPress(theScene);
 		stopWhaleOnKeyRelease(theScene);
 
@@ -118,7 +126,9 @@ public class StartGameScene extends MyScene {
 				switch (event.getCode()) {
 				case UP:
 					whale.jump();
-					loopBg();
+					if (whale.y < 150) {
+					gameLoop();
+					}
 					checkhitRubbish();
 					checkGameOver();
 					break;
@@ -163,41 +173,43 @@ public class StartGameScene extends MyScene {
 		});
 	}
 
-	public void loopBg() {
-		if (whale.y <= 150) {
-			whale.setY(400);
-			
-			for (Seaweed s : seaweeds) {
-				s.setY((s.getY()+250));
-				s.updateUI();
-				if (s.getY()>COVER_HEIGHT) {
-					s.removeFromLayer();
-					seaweeds.remove(s);
-					numberOfSeaweedRemoved++;
-				}
+	public void gameLoop() {
+		EventHandler<ActionEvent> eventHandler = e -> {
+		  	whale.setY(whale.getY()+5);
+		  	whale.updateUI();
+		    	Iterator it;
+		    	it = seaweeds.iterator();
+		    while (it.hasNext()) {
+		    		Seaweed temp = (Seaweed) it.next();
+		    	  	temp.setY((temp.getY()+5));
+		    	  	temp.updateUI();
+		    	  	if (temp.getY()>550) {
+		    	  		temp.removeFromLayer();
+		    	  		it.remove();
+		    	  		numberOfSeaweedRemoved++;
+		    	  	}
+		    }
+		    for (int i=0; i<numberOfSeaweedRemoved; i++) {
+					seaweeds.add(createSeaweed(0)); // 0: top
 			}
-		}
-		
-		// create number of seaweed previously removed
-		for (int i = 0; i<numberOfSeaweedRemoved; i++) {
-			seaweeds.add(createSeaweed(0)); // 0: top
-		}
-		numberOfSeaweedRemoved = 0;
-	}
+		  	score += 5;
+			numberOfSeaweedRemoved = 0;
+	};				
+			final Timeline loop = new Timeline(new KeyFrame(Duration.millis(500), eventHandler));
+			loop.setCycleCount(5);
+			loop.play();
+	 }
 
 	public void checkhitRubbish() {
 		if (whale.checkHitRubbish(rubbishes)) {
 			rubbishes.add(createRubbish());
 			score += 50;
-			System.out.println(score);
 		}
 	}
 
 	public void createSplashTimeline() {
 		EventHandler<ActionEvent> eventHandler = e -> {
-			Iterator it;
-		    	it = splash.iterator();
-				it = splash.iterator();
+			Iterator it = splash.iterator();
 			while (it.hasNext()) {
 		Splash temp = (Splash) it.next();
 			if (temp.y > -20) {
@@ -208,12 +220,10 @@ public class StartGameScene extends MyScene {
 					temp.removeFromLayer();
 					it.remove();
 					score += 50;
-				};
-				System.out.println(score);
+				}
 			}
 			}
-		};
-		
+		};		
 		shoot = new Timeline(new KeyFrame(Duration.millis(500), eventHandler));
 		shoot.setCycleCount(Timeline.INDEFINITE);
 	}
@@ -223,8 +233,8 @@ public class StartGameScene extends MyScene {
 	}
 	
 	public void checkGameOver() {
-	    if (whale.checkHitRubbish(rubbishes)) {
-	        System.out.println("Whale touches rubbish! Game Over!");	    	
+	    if (whale.checkHitRubbish(rubbishes) || !(whale.checkHitPlatform(seaweeds))) {
+	    		// display endgame scene
 	        System.out.println(score);
 	    }
 	}
@@ -246,6 +256,7 @@ public class StartGameScene extends MyScene {
 		
 		return theNearestSeaweed;
 	}
+	
 
 }
 
