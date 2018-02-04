@@ -1,24 +1,13 @@
 package characters;
 
-import java.awt.*;    
-import javax.swing.*; 
-import java.net.URL;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 
-public class Rubbish {
- private String rubbishImage = "images/rubbish.gif";
- private Image imgRubbish;
 
-// public Image show() {  
-//  ImageIcon iconRubbish = null;
-//     URL imgURL = getClass().getClassLoader().getResource(rubbishImage);
-//     if (imgURL != null) {
-//        iconRubbish = new ImageView(imgURL);
-//     } else {
-//        System.err.println("Couldn't find file: " + rubbishImage);
-//     }
-//     imgRubbish = iconRubbish.getImage();
-//     return imgRubbish;
-// }
-
+public class Rubbish extends Character {
+	
+    public Rubbish(Pane layer, Image image, double x, double y, double dx, double dy) {
+        super(layer, image, x, y, dx, dy);
+    }
 
 }
