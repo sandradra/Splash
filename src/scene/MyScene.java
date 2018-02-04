@@ -64,7 +64,11 @@ public abstract class MyScene {
 	}
 	
 	public Scene getScene() {
-		return createScene();
+		if (scene == null) {
+			scene = createScene();
+		}
+		
+		return scene;
 	}
 	
 	public EventEmitter<Object> getEventEmitter(String key) {

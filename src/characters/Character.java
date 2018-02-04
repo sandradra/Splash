@@ -11,6 +11,9 @@ public abstract class Character{
     Pane layer;
     public double x, y, dx, dy, w, h;
 
+	public static final int COVER_WIDTH = 475;
+	public static final int COVER_HEIGHT = 600;
+    
     public Character(Pane layer,Image image, double x, double y, double dx, double dy) {
 
         this.layer = layer;

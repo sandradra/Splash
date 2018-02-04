@@ -35,6 +35,7 @@ public class StartGameScene extends MyScene {
 	Random r = new Random();
 	Pane gamePane;
 	Scene theScene;
+	Timeline shoot;
 
 	// define image paths
 	public static final String GAME_BACKGROUND = "resources/page/game_background.png";
@@ -54,17 +55,14 @@ public class StartGameScene extends MyScene {
 
 		theScene = new Scene(group, COVER_WIDTH, COVER_HEIGHT);
 
+		createSplashTimeline();
+		
 		rubbish.add(createRubbish());
 		for (int i = 0; i<12; i++) {seaweed.add(createSeaweed());}
 		whale = createWhale();
 
-		EventHandler<ActionEvent> eventHandler = e -> {
-			moveWhaleOnKeyPress(theScene);
-		};
-
-		Timeline animation = new Timeline(new KeyFrame(Duration.millis(500), eventHandler));
-		animation.setCycleCount(Timeline.INDEFINITE);
-		animation.play();
+		moveWhaleOnKeyPress(theScene);
+		stopWhaleOnKeyRelease(theScene);
 
 		return theScene;
 
@@ -105,31 +103,47 @@ public class StartGameScene extends MyScene {
 			@Override public void handle(KeyEvent event) {
 				switch (event.getCode()) {
 				case UP:
-					whale.move(0,-20);
-					whale.updateUI();
+					whale.jump();
 					loopBg();
 					checkhitRubbish();
 					break;
 				case LEFT:
-					whale.move(-20,0);
-					whale.updateUI();
+					
+					whale.left();
 					checkhitRubbish();
 					break;
 				case RIGHT:
-					whale.move(20,0);
-					whale.updateUI();
-					checkhitRubbish();
-					break;
-				case DOWN:
-					whale.move(0,20);
-					whale.updateUI();
+					
+					whale.right();
 					checkhitRubbish();
 					break;
 				case SPACE:
-					System.out.println("StartGameScene.moveWhaleOnKeyPress(...).new EventHandler() {...}.handle()");
-					createSplash();
-					System.out.println("shoot");
-					shoot();
+					if (splash != null && !checkSplashInScreen()
+						|| splash == null) {
+						createSplash();
+						shoot();
+					}
+					break;
+				default:
+					break;
+				}
+			}
+		});
+	}
+	
+	public void stopWhaleOnKeyRelease(Scene scene) {
+		scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+			@Override public void handle(KeyEvent event) {
+				switch (event.getCode()) {
+				case LEFT:
+					whale.stopLeft();
+					break;
+					
+				case RIGHT:
+					whale.stopRight();
+					break;
+					
+				default:
 					break;
 				}
 			}
@@ -166,20 +180,29 @@ public class StartGameScene extends MyScene {
 		}
 	}
 
-	public void shoot() {
+	public void createSplashTimeline() {
 		EventHandler<ActionEvent> eventHandler = e -> {
-			if (splash.y > -10) {
+			if (splash.y > -20) {
 				splash.move(0, -100);
 				splash.updateUI();
 				splash.checkHitRubbish(rubbish);
-				checkhitRubbish();
 				System.out.println(splash.y);
 			}
 		};
-		Timeline shoot = new Timeline(new KeyFrame(Duration.millis(500), eventHandler));
+		
+		shoot = new Timeline(new KeyFrame(Duration.millis(500), eventHandler));
 		shoot.setCycleCount(Timeline.INDEFINITE);
+	}
+
+	
+	public void shoot() {
 		shoot.play();
 	}
+
+	public boolean checkSplashInScreen() {
+		return splash.y > -20;
+	}
+	
 
 }
 
