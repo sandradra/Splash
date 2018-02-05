@@ -2,8 +2,6 @@ package characters;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
-
 import javafx.animation.Animation.Status;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -51,6 +49,7 @@ public class Whale extends Character {
 		right.setCycleCount(Timeline.INDEFINITE);
 
 		jump.setOnFinished(actionEvent -> fall.play());
+
 	}
 
 	@Override
@@ -71,14 +70,9 @@ public class Whale extends Character {
 
 	public boolean checkHitRubbish(ArrayList<Rubbish> rubbish) {
 		boolean hit = false;
-		for(Iterator<Rubbish> it = rubbish.iterator(); it.hasNext(); ) {
-			Rubbish r = it.next();
+			for(Rubbish r: rubbish) {
 			if (this.collidesWith(r)) {
-				r.removeFromLayer();
-				it.remove();
 				hit = true;
-			}else{
-				this.dx = 0;
 			}
 		}
 		return hit;
