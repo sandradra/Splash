@@ -49,7 +49,11 @@ public abstract class Character{
     public void addToLayer() {
         this.layer.getChildren().add(this.imageView);
     }
-
+    
+    public void toFront() {
+    		this.imageView.toFront();
+    }
+    
     public void removeFromLayer() {
         this.layer.getChildren().remove(this.imageView);
     }
