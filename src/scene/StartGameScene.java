@@ -275,8 +275,6 @@ public class StartGameScene extends MyScene{
 
 	public void handleWhaleFallsDown(Whale whale,int score) {
 		
-		whale.toFront();
-		
 		// add checkSplashHitRubbish function to end game
 		if (!whale.checkWhaleInScreen()) {
 			whale.stopFall();

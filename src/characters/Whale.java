@@ -127,10 +127,6 @@ public class Whale extends Character {
 		return y < (COVER_HEIGHT + h/2);
 	}
 
-	public void toFront() {
-		this.toFront();
-	}
-	
 	// override collidesWith function exclusively for checking the collision between whale and platforms to cater for the whale tail
 	@Override
 	public boolean collidesWith(Character other) {
