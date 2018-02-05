@@ -14,14 +14,15 @@ public class Whale extends Character {
 
 	public Timeline jump, fall, left, right;
 	private EventEmitter<Whale> moveEmitter = new EventEmitter<Whale>();
-	private EventEmitter<Seaweed> landOnSeaweedEmitter = new EventEmitter<Seaweed>();
-
+	private Seaweed currentSeaweed = null;
+	
 	public Whale(Pane layer, Image image, double x, double y, double dx, double dy) {
 		super(layer, image, x,y, dx, dy);
 
 		jump = new Timeline(new KeyFrame(Duration.millis(20), actionEvent -> {
 			move(0, -10);
 			updateUI();
+			currentSeaweed = null;
 		}));
 		jump.setCycleCount(20);
 
@@ -30,13 +31,17 @@ public class Whale extends Character {
 			move(0, 10);
 			updateUI();
 		}));
-		fall.setCycleCount(60); // original 20
+		fall.setCycleCount(Timeline.INDEFINITE); // original 20
 
 
 		left = new Timeline(new KeyFrame(Duration.millis(20), actionEvent -> {
 			if (this.x > 5) {
 				move(-5,0);
 				updateUI();
+				
+				if (currentSeaweed != null && !collidesWith(currentSeaweed)) {
+					fall.play();
+				}
 			}
 		}));
 		left.setCycleCount(Timeline.INDEFINITE);
@@ -45,6 +50,10 @@ public class Whale extends Character {
 			if (this.x < (COVER_WIDTH - this.w / 2)){
 				move(5, 0);
 				updateUI();
+				
+				if (currentSeaweed != null && !collidesWith(currentSeaweed)) {
+					fall.play();
+				}
 			}
 		}));
 		right.setCycleCount(Timeline.INDEFINITE);
@@ -118,6 +127,10 @@ public class Whale extends Character {
 		return y < (COVER_HEIGHT + h/2);
 	}
 
+	public void toFront() {
+		this.toFront();
+	}
+	
 	// override collidesWith function exclusively for checking the collision between whale and platforms to cater for the whale tail
 	@Override
 	public boolean collidesWith(Character other) {
@@ -127,13 +140,13 @@ public class Whale extends Character {
 	// if whale collides with seaweeds, the whale will stay on top of seaweeds
 	public void checkHittedSeaweed(ArrayList<Seaweed> seaweeds) {
 		for (Seaweed seaweed: seaweeds) {
-			if (this.collidesWith(seaweed) && fall.getStatus().equals(Status.RUNNING)) {
-				System.out.println("stopFAll()");
-				stopFall(); 
-				landOnSeaweedEmitter.emit(seaweed);
-				}
-		} 
+			if (this.collidesWith(seaweed)){
+				stopFall();
+				this.currentSeaweed = seaweed;
+				break;
 			}
+		}
+	}
 
 	// find the list of seaweeds with y coordinate lower than whale
 	public ArrayList<Seaweed> findSeaweedBelowWhale(ArrayList<Seaweed> seaweeds, Whale whale) {
@@ -148,23 +161,6 @@ public class Whale extends Character {
 		Collections.sort(seaweedsBelowWhale);
 
 		return seaweedsBelowWhale;
-	}
-
-	// check if whale is on seaweed
-	public boolean onSeaweed (Seaweed seaweed) {
-		return ((seaweed.x <= this.x + this.w)
-					&& (this.x <= seaweed.x + seaweed.w)
-					&& (seaweed.y - seaweed.h >= this.y)
-//					&& (whale.y <= seaweed.y + seaweed.h)
-					);
-	}
-
-	public void toFront() {
-		this.toFront();
-	}
-
-	public EventEmitter<Seaweed> getLandOnSeaweedEmitter() {
-		return this.landOnSeaweedEmitter;
 	}
 
 }

@@ -20,7 +20,6 @@ import javafx.scene.text.Font;
 import javafx.scene.input.KeyEvent;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
-import javafx.animation.Animation.Status;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -89,9 +88,7 @@ public class StartGameScene extends MyScene{
 		seaweeds = createSeaweeds(seaweeds);
 		whale    = createWhale();
 
-		// trigger event once the whale moves
-//		whale.getLandOnSeaweedEmitter().subscribe(seaweed -> storeSeaweedLanded(seaweed));
-		whale.getMoveEmitter().subscribe(whale -> handleWhaleMove(score));
+		whale.getMoveEmitter().subscribe(whale -> handleWhaleFallsDown(whale, score));
 
 		moveWhaleOnKeyPress(theScene);
 		stopWhaleOnKeyRelease(theScene);
@@ -99,7 +96,6 @@ public class StartGameScene extends MyScene{
 		return theScene;
 	}
 	
-
 	public Whale createWhale() {
 		whaleImage  = readImage2(WHALE_L);
 		double x    = (475 - whaleImage.getWidth()) / 2.0;
@@ -125,7 +121,7 @@ public class StartGameScene extends MyScene{
 		
 		seaweedImage = readImage2(SEAWEED);
 
-		double x = (double)(random.nextInt(COVER_WIDTH - 20));
+		double x = (double)(random.nextInt(350) + 50);
 		double y = (double)(random.nextInt(90) + part * 90);
 
 		return new Seaweed(gamePane, seaweedImage, x, y, 0, 0);
@@ -162,7 +158,6 @@ public class StartGameScene extends MyScene{
 				case LEFT:					
 					whale.left();
 					label2.setText(Integer.toString(score));
-					
 					break;
 				case RIGHT:
 					whale.right();
@@ -243,17 +238,17 @@ public class StartGameScene extends MyScene{
 			loop.setCycleCount(5);
 	 }
 
-	private void playLoop() {
+	public void playLoop() {
 		loop.play();
 	}
 	
-	private void playSound() {
+	public void playSound() {
 		Media media = new Media(new File(SPLASH_SOUND).toURI().toString());
 		mediaPlayer = new MediaPlayer(media);
 		mediaPlayer.setAutoPlay(true);
 	}
 		
-	private void createSplashTimeline() {
+	public void createSplashTimeline() {
 
 		EventHandler<ActionEvent> eventHandler = e -> {
 			for(Iterator<Splash> it = splash.iterator(); it.hasNext(); ) {
@@ -274,46 +269,23 @@ public class StartGameScene extends MyScene{
 		shoot.setCycleCount(Timeline.INDEFINITE);
 	}			
 	
-	private void playShoot() {
+	public void playShoot() {
 		shoot.play();
 	}
 
-	private void handleWhaleMove(int score) {
-
+	public void handleWhaleFallsDown(Whale whale,int score) {
+		
 		whale.toFront();
 		
-		// TODO add checkSplashHitRubbish function to end game
+		// add checkSplashHitRubbish function to end game
 		if (!whale.checkWhaleInScreen()) {
-			whale.fall.setOnFinished(event -> {
-				Platform.runLater(() -> 
-					this.emitterMap.get(GAME_OVER).emit(score));
-			return;
+			whale.stopFall();
+			Platform.runLater(() -> this.emitterMap.get(GAME_OVER).emit(score));
 		}
+
+		// check if the whale hits seaweed
+		whale.checkHittedSeaweed(whale.findSeaweedBelowWhale(StartGameScene.seaweeds, StartGameScene.whale));
 		
-		);
-			whale.checkHittedSeaweed(whale.findSeaweedBelowWhale(seaweeds, whale));
-		}
-
-	// TODO allow the whale to drop once it's no longer on a platform
-//	private void handleWhaleOnSeaweed(Seaweed seaweed) {
-//		if ( whale.left.getStatus().equals(Status.RUNNING) 
-//					|| whale.right.getStatus().equals(Status.RUNNING)  
-//					) {
-//			if (!whale.onSeaweed(seaweed)) {
-//				whale.fall();
-//			}
-//		}
-//	}
-	
-	/*
-	private Seaweed storeSeaweedLanded(Seaweed seaweed) {
-		Seaweed seaweedLanded = seaweed;
-		return seaweedLanded;
 	}
-	*/
-
-	
-
-}
 
 }
