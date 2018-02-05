@@ -13,7 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.Group;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -24,7 +23,6 @@ import javafx.event.ActionEvent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-
 import java.util.ArrayList;
 
 import javafx.util.Duration;
@@ -39,22 +37,15 @@ public class StartGameScene extends MyScene{
 	public static final String RUBBISH_1       = "resources/rubbish/rubbish1.png";
 	public static final String SEAWEED         = "resources/platform/platform.png";
 	public static final String SPLASH          = "resources/splash/splash.png";
-	public static final String GAME_BACKGROUND_MUSIC   = "resources/sounds/play.wav";
-	public static final String WHALE_DROP_SOUND_EFFECT = "resources/sounds/drop.wav";
 
 	public static final String GAME_OVER = "game_over";
 	
-	public static Media gameBackgroundMusic                   = new Media(new File(GAME_BACKGROUND_MUSIC).toURI().toString());
-	public static MediaPlayer gameBackgroundMusicMediaPlayer  = new MediaPlayer(gameBackgroundMusic);
-	
-	public static Media whaleDropSoundEffect                  = new Media(new File(WHALE_DROP_SOUND_EFFECT).toURI().toString());
-	public static MediaPlayer whaleDropSoundEffectMediaPlayer = new MediaPlayer(whaleDropSoundEffect);
 	public static final String SPLASH_SOUND = "resources/sounds/splash.wav";
 	
 	public static Whale whale;
 	public static ArrayList<Rubbish> rubbishes = new ArrayList<Rubbish>();
-	public ArrayList<Seaweed> seaweeds  = new ArrayList<Seaweed>();
-	public static ArrayList<Splash> splash     = new ArrayList<Splash>();
+	public static ArrayList<Seaweed> seaweeds  = new ArrayList<Seaweed>();
+	public ArrayList<Splash> splash  = new ArrayList<Splash>();
 	public Image whaleImage, rubbishImage, seaweedImage, splashImage;
 	public ImageView bgImage, bgImage1;
 	public static int score = 0;
@@ -62,8 +53,6 @@ public class StartGameScene extends MyScene{
 	public static boolean gameOver = false;
 	public boolean removeRubbish = false;
 	public Random random = new Random();
-	public Label label   = new Label();
-	public HBox hBox     = new HBox();
 	public Label label1 = new Label("YOUR SCORE:");	
 	public Label label2 = new Label();
 	public Pane gamePane;
@@ -80,9 +69,6 @@ public class StartGameScene extends MyScene{
 	@Override
 	public Scene createScene(){
 
-		gameBackgroundMusicMediaPlayer.setOnEndOfMedia(() -> gameBackgroundMusicMediaPlayer.seek(Duration.ZERO) );
-		gameBackgroundMusicMediaPlayer.play();
-		
 		Group group = new Group();
 		gamePane   = new Pane();
 		bgImage = readImage(GAME_BACKGROUND);
@@ -102,7 +88,7 @@ public class StartGameScene extends MyScene{
 		seaweeds = createSeaweeds(seaweeds);
 		whale    = createWhale();
 
-		whale.getMoveEmitter().subscribe(whale -> handleWhaleMove(score));
+		whale.getMoveEmitter().subscribe(whale -> handleWhaleFallsDown(whale, score));
 
 		moveWhaleOnKeyPress(theScene);
 		stopWhaleOnKeyRelease(theScene);
@@ -287,43 +273,19 @@ public class StartGameScene extends MyScene{
 		shoot.play();
 	}
 
-	public void handleWhaleMove(int score) {
-
-		whale.toFront();
+	public void handleWhaleFallsDown(Whale whale,int score) {
 		
 		// TODO add checkSplashHitRubbish function to end game
 		if (!whale.checkWhaleInScreen()) {
-			whale.fall.stop();
-				gameBackgroundMusicMediaPlayer.stop();
-				whaleDropSoundEffectMediaPlayer.play();
+			whale.fall.setOnFinished(event -> {
 				Platform.runLater(() -> 
-					this.emitterMap.get(GAME_OVER).emit(score));
-			return;
-		}
-		
-		
-		// land on platforms
+				this.emitterMap.get(GAME_OVER).emit(score));
+			});
 		}
 
+		whale.checkHittedSeaweed(whale.findSeaweedBelowWhale(StartGameScene.seaweeds, StartGameScene.whale));
 		
 		// TODO allow the whale to drop once it's no longer on a platform
-//			while (
-//				whale.left.getStatus().equals(Status.RUNNING)
-//				|| whale.right.getStatus().equals(Status.RUNNING)
-//			) {
-//				if (!whale.collidesWith(seaweed)){
-//					whale.fall();
-//				}
-//			}
-			
 	}
 
-//	public void onSeaweed (Seaweed seaweed) {
-//		return (seaweed.x <= whale.x + whale.w)
-//					&& (whale.x <= seaweed.x + seaweed.w)
-//					&& (seaweed.y - seaweed.h <= whale.y)
-//					&& (whale.y <= seaweed.y + seaweed.h);
-//		
-//	}
-	
-
+}

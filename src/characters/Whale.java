@@ -3,8 +3,6 @@ package characters;
 import java.util.ArrayList;
 import java.util.Collections;
 import javafx.animation.Animation.Status;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.image.Image;
@@ -16,7 +14,6 @@ public class Whale extends Character {
 
 	public Timeline jump, fall, left, right;
 	private EventEmitter<Whale> moveEmitter = new EventEmitter<Whale>();
-	private EventEmitter<Seaweed> landOnSeaweedEmitter = new EventEmitter<Seaweed>();
 
 	public Whale(Pane layer, Image image, double x, double y, double dx, double dy) {
 		super(layer, image, x,y, dx, dy);
@@ -32,7 +29,7 @@ public class Whale extends Character {
 			move(0, 10);
 			updateUI();
 		}));
-		fall.setCycleCount(Timeline.INDEFINITE); // original 20
+		fall.setCycleCount(60); // original 20
 
 
 		left = new Timeline(new KeyFrame(Duration.millis(20), actionEvent -> {
@@ -52,10 +49,12 @@ public class Whale extends Character {
 		right.setCycleCount(Timeline.INDEFINITE);
 
 		jump.setOnFinished(actionEvent -> fall.play());
+
 	}
 
 	@Override
 	public void move(int dx, int dy) {
+		System.out.println("Whale.move()");
 		super.move(dx,dy); 
 		moveEmitter.emit(this);
 		
@@ -86,10 +85,6 @@ public class Whale extends Character {
 		}
 	}
 
-	public void fall() {
-		fall.play();
-	}
-	
 	public void stopjump() {
 		jump.stop();
 	}
@@ -117,10 +112,6 @@ public class Whale extends Character {
 	public EventEmitter<Whale> getMoveEmitter() {
 		return this.moveEmitter;
 	}
-	
-	public EventEmitter<Seaweed> getLandOnSeaweedEmitter(){
-		return this.landOnSeaweedEmitter;
-	}
 
 	public boolean checkWhaleInScreen() {
 		return y < (COVER_HEIGHT + h/2);
@@ -129,21 +120,18 @@ public class Whale extends Character {
 	// override collidesWith function exclusively for checking the collision between whale and platforms to cater for the whale tail
 	@Override
 	public boolean collidesWith(Character other) {
-		return (other.x + other.w >= x && other.y + other.h >= y && other.x <= x + w * 0.75 && other.y <= y + h);
+		return (other.x + other.w >= x && other.y + other.h >= y && other.x <= x + w / 2 && other.y <= y + h);
 	}
 
 	// if whale collides with seaweeds, the whale will stay on top of seaweeds
 	public void checkHittedSeaweed(ArrayList<Seaweed> seaweeds) {
 		for (Seaweed seaweed: seaweeds) {
-			if (this.collidesWith(seaweed) && fall.getStatus().equals(Status.RUNNING)) {
-				System.out.println("stopFAll()");
-				stopFall(); 
-				landOnSeaweedEmitter.emit(seaweed);
-				}
-				// call another method to drop whale when 
-		} 
+			if (this.collidesWith(seaweed)){
+				stopFall();
+				break;
+			}
+		}
 	}
-	
 
 	// find the list of seaweeds with y coordinate lower than whale
 	public ArrayList<Seaweed> findSeaweedBelowWhale(ArrayList<Seaweed> seaweeds, Whale whale) {
