@@ -16,13 +16,15 @@ public class Whale extends Character {
 
 	public Timeline jump, fall, left, right;
 	private EventEmitter<Whale> moveEmitter = new EventEmitter<Whale>();
-
-	public Whale(Pane layer, Image image, double x, double y) {
-		super(layer, image, x,y);
+	private Seaweed currentSeaweed = null;
+	
+	public Whale(Pane layer, Image image, double x, double y, double dx, double dy) {
+		super(layer, image, x,y, dx, dy);
 
 		jump = new Timeline(new KeyFrame(Duration.millis(20), actionEvent -> {
 			move(0, -10);
 			updateUI();
+			currentSeaweed = null;
 		}));
 		jump.setCycleCount(20);
 
@@ -31,13 +33,17 @@ public class Whale extends Character {
 			move(0, 10);
 			updateUI();
 		}));
-		fall.setCycleCount(60); // original 20
+		fall.setCycleCount(Timeline.INDEFINITE); // original 20
 
 
 		left = new Timeline(new KeyFrame(Duration.millis(20), actionEvent -> {
 			if (this.x > 5) {
 				move(-5,0);
 				updateUI();
+				
+				if (currentSeaweed != null && !collidesWith(currentSeaweed)) {
+					fall.play();
+				}
 			}
 		}));
 		left.setCycleCount(Timeline.INDEFINITE);
@@ -46,6 +52,10 @@ public class Whale extends Character {
 			if (this.x < (COVER_WIDTH - this.w / 2)){
 				move(5, 0);
 				updateUI();
+				
+				if (currentSeaweed != null && !collidesWith(currentSeaweed)) {
+					fall.play();
+				}
 			}
 		}));
 		right.setCycleCount(Timeline.INDEFINITE);
@@ -57,7 +67,8 @@ public class Whale extends Character {
 	@Override
 	public void move(int dx, int dy) {
 		super.move(dx,dy); 
-		moveEmitter.emit(this);		
+		moveEmitter.emit(this);
+		
 	}
 
 	public double getWhaleX() {
@@ -131,6 +142,7 @@ public class Whale extends Character {
 		for (Seaweed seaweed: seaweeds) {
 			if (this.collidesWith(seaweed)){
 				stopFall();
+				this.currentSeaweed = seaweed;
 				break;
 			}
 		}

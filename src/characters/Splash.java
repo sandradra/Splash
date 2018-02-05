@@ -13,8 +13,8 @@ public class Splash extends Character {
 	public static final String SPLASH_IMAGE = "resources/splash/splash.png";
 	boolean visible;
 	
-	public Splash(Pane layer, Image image, double x, double y) {
-		super(layer, image, x, y);
+	public Splash(Pane layer, Image image, double x, double y, double dx, double dy) {
+		super(layer, image, x, y, dx, dy);
 		this.image = MyScene.readImage2(SPLASH_IMAGE);
 	    this.visible = true;
 	}	

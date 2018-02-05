@@ -7,7 +7,7 @@ public class Seaweed extends Character implements Comparable<Seaweed>{
 
 	
     public Seaweed(Pane layer, Image image, double x, double y, double dx, double dy) {
-        super(layer, image,x, y);
+        super(layer, image,x, y, dx, dy);
     }
     
 	@Override

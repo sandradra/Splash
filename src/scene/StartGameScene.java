@@ -34,13 +34,13 @@ public class StartGameScene extends MyScene{
 	// define image paths
 	public static final String GAME_BACKGROUND = "resources/page/game_background.png";
 	public static final String WHALE_L         = "resources/whale/whaleL.png";
-	public static final String RUBBISH_1       = "resources/rubbish/rub1.png";
+	public static final String RUBBISH_1       = "resources/rubbish/rubbish1.png";
 	public static final String SEAWEED         = "resources/platform/platform.png";
 	public static final String SPLASH          = "resources/splash/splash.png";
-	
-	public static final String HOBO_FONT_TYPE = "file:resources/font/Hobo-Std-Medium.ttf";
 
 	public static final String GAME_OVER = "game_over";
+	
+	public static final String SPLASH_SOUND = "resources/sounds/splash.wav";
 	
 	public static Whale whale;
 	public static ArrayList<Rubbish> rubbishes = new ArrayList<Rubbish>();
@@ -59,8 +59,7 @@ public class StartGameScene extends MyScene{
 	public Scene theScene;
 	public Timeline shoot;
 	public Timeline loop;
-	public Person person;	
-	
+	public Person person;
 	Media fallSound = new Media(new File("resources/sounds/drop.wav").toURI().toString());
 	MediaPlayer fallSoundPlayer = new MediaPlayer(fallSound);
 
@@ -102,9 +101,10 @@ public class StartGameScene extends MyScene{
 		whaleImage  = readImage2(WHALE_L);
 		double x    = (475 - whaleImage.getWidth()) / 2.0;
 		double y    = (600 * 0.85);
-		Whale whale = new Whale(gamePane, whaleImage, x, y);
+		Whale whale = new Whale(gamePane, whaleImage, x, y, 0, 0);
 		return whale;
 	}
+
 
 	public Rubbish createRubbish(int setY) {
 		rubbishImage = readImage2(RUBBISH_1);
@@ -112,7 +112,7 @@ public class StartGameScene extends MyScene{
 		int set = setY;
 		double x     = (double)(random.nextInt(250) + 5);
 		double y     = (double)(random.nextInt(set));  // set range
-		Rubbish r    = new Rubbish(gamePane, rubbishImage, x, y);
+		Rubbish r    = new Rubbish(gamePane, rubbishImage, x, y, 0,0);
 		return r;
 		}
 		else return null;
@@ -141,7 +141,7 @@ public class StartGameScene extends MyScene{
 
 	public void createSplash() {
 		splashImage = readImage2(SPLASH);
-		splash.add(new Splash(gamePane, splashImage, whale.getCenterX()-whale.w*0.5, (whale.getCenterY()-whale.h*0.5)-10));
+		splash.add(new Splash(gamePane, splashImage, whale.getCenterX()-whale.w*0.5, (whale.getCenterY()-whale.h*0.5)-10, 0.0, 1.0));
 	}
 
 	public void moveWhaleOnKeyPress(Scene scene) {
@@ -200,7 +200,13 @@ public class StartGameScene extends MyScene{
 	            }
 		});
 	}
-
+	
+	public void playSplashSound() {
+		Media splashSound = new Media(new File("resources/sounds/splash.wav").toURI().toString());
+		MediaPlayer splashSoundPlayer = new MediaPlayer(splashSound);
+		splashSoundPlayer.setAutoPlay(true);
+	}
+	
 	public void stopWhaleOnKeyRelease(Scene scene) {
 		scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			@Override public void handle(KeyEvent event) {
@@ -218,12 +224,6 @@ public class StartGameScene extends MyScene{
 				}
 			}
 		});
-	}
-	
-	public void playSplashSound() {
-		Media splashSound = new Media(new File("resources/sounds/splash.wav").toURI().toString());
-		MediaPlayer splashSoundPlayer = new MediaPlayer(splashSound);
-		splashSoundPlayer.setAutoPlay(true);
 	}
 	
 	public void gameLoop() {   // to smooth the animation of scrolling background
@@ -268,7 +268,7 @@ public class StartGameScene extends MyScene{
 			loop = new Timeline(new KeyFrame(Duration.millis(500), eventHandler));
 			loop.setCycleCount(5);
 	 }
-
+	
 	public void playLoop() {
 		loop.play();
 	}
@@ -286,7 +286,6 @@ public class StartGameScene extends MyScene{
 						it.remove();
 						rubbishes.add(createRubbish(250));
 						score += 50;
-						label2.setText(Integer.toString(score));
 					}
 				}
 			};
@@ -301,17 +300,17 @@ public class StartGameScene extends MyScene{
 
 	public void handleWhaleFallsDown(Whale whale,int score) {
 		
-		// TODO add checkSplashHitRubbish function to end game
+		// add checkSplashHitRubbish function to end game
 		if (!whale.checkWhaleInScreen()) {
 			fallSoundPlayer.play();
-			whale.fall.setOnFinished(event -> {
-				Platform.runLater(() -> 
-				this.emitterMap.get(GAME_OVER).emit(score));	
-				resetGame();
-			});
-		}		
+			whale.stopFall();
+			Platform.runLater(() -> this.emitterMap.get(GAME_OVER).emit(score));
+			resetGame();
+		}
+
+		// check if the whale hits seaweed
 		whale.checkHittedSeaweed(whale.findSeaweedBelowWhale(StartGameScene.seaweeds, StartGameScene.whale));
-		// TODO allow the whale to drop once it's no longer on a platform
+		
 	}
 	
 	public void resetGame() {
@@ -323,5 +322,5 @@ public class StartGameScene extends MyScene{
 		rubbishes.add(createRubbish(250));
 		seaweeds = createSeaweeds(seaweeds);		
 	}
-	
+
 }
