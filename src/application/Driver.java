@@ -44,14 +44,18 @@ public class Driver extends Application {
 		leaderboardScene.getEventEmitter(LeaderboardScene.CLICKED_HOME_BUTTON)
 		  .subscribe(event -> primaryStage.setScene(launchScene.getScene()));
 		
-		startGameScene.getEventEmitter(StartGameScene.GAME_OVER)
-		  .subscribe(score -> { System.out.println("Driver.start()");
-			  ((EndGameScene) endGameScene).setScore((int) score);
-			  System.out.println("setscore");
-			  primaryStage.setScene(endGameScene.getScene());
-			  System.out.println("create endgame scene");
-		  });
+//		startGameScene.getEventEmitter(StartGameScene.GAME_OVER)
+//		  .subscribe(score -> { System.out.println("Driver.start()");
+//			  ((EndGameScene) endGameScene).setScore((int) score);
+//			  System.out.println("setscore");
+//			  primaryStage.setScene(endGameScene.getScene());
+//			  System.out.println("create endgame scene");
+//		  });
 		
+		startGameScene.getEventEmitter(StartGameScene.GAME_OVER)
+		  .subscribe(score -> {((EndGameScene) endGameScene).setScore((int) score);
+			  primaryStage.setScene(endGameScene.getScene());
+		  });
 		
 		endGameScene.getEventEmitter(LeaderboardScene.CLICKED_HOME_BUTTON)
 		.subscribe(event -> primaryStage.setScene(launchScene.getScene()));

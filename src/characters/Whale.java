@@ -69,19 +69,6 @@ public class Whale extends Character {
 		return y;
 	}
 
-
-	public boolean checkHitPlatform(ArrayList<Seaweed> seaweed) {	
-		boolean hit= true;
-		for (Seaweed i:seaweed) {
-			hit = this.collidesWith(i);
-			if (hit = false) {
-				System.out.println("Game Over!");
-			}else {
-			}
-		}
-		return hit;
-	}
-
 	public boolean checkHitRubbish(ArrayList<Rubbish> rubbish) {
 		boolean hit = false;
 		for(Iterator<Rubbish> it = rubbish.iterator(); it.hasNext(); ) {
