@@ -16,16 +16,22 @@ public class Driver extends Application {
 
 
 	public static final String GAME_TITLE = "Let's Splash!";
+	public static final String BACKGROUND_MUSIC = "resources/sounds/home.wav";
 	
 	@Override
 	public void start(Stage primaryStage) {
 		
+		// play background music once application is launched
+		Media backgroundMusic   = new Media(new File(BACKGROUND_MUSIC).toURI().toString());
+		MediaPlayer mediaPlayer = new MediaPlayer(backgroundMusic);
+		mediaPlayer.setOnEndOfMedia(new Runnable() { public void run() { mediaPlayer.seek(Duration.ZERO); }} );
+		mediaPlayer.play();
 
 		// create scenes
 		MyScene launchScene      = new LaunchScene();
 		MyScene leaderboardScene = new LeaderboardScene();
-		MyScene endGameScene     = new EndGameScene();
 		MyScene startGameScene   = new StartGameScene();
+		MyScene endGameScene     = new EndGameScene();
 
 		//---START OF HANDLING BUTTON CLICK---
 		

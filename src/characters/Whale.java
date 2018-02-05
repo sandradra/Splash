@@ -3,8 +3,6 @@ package characters;
 import java.util.ArrayList;
 import java.util.Collections;
 import javafx.animation.Animation.Status;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.image.Image;
@@ -32,7 +30,7 @@ public class Whale extends Character {
 			move(0, 10);
 			updateUI();
 		}));
-		fall.setCycleCount(Timeline.INDEFINITE); // original 20
+		fall.setCycleCount(60); // original 20
 
 
 		left = new Timeline(new KeyFrame(Duration.millis(20), actionEvent -> {
@@ -52,10 +50,12 @@ public class Whale extends Character {
 		right.setCycleCount(Timeline.INDEFINITE);
 
 		jump.setOnFinished(actionEvent -> fall.play());
+
 	}
 
 	@Override
 	public void move(int dx, int dy) {
+		System.out.println("Whale.move()");
 		super.move(dx,dy); 
 		moveEmitter.emit(this);
 		
@@ -86,10 +86,6 @@ public class Whale extends Character {
 		}
 	}
 
-	public void fall() {
-		fall.play();
-	}
-	
 	public void stopjump() {
 		jump.stop();
 	}
@@ -117,10 +113,6 @@ public class Whale extends Character {
 	public EventEmitter<Whale> getMoveEmitter() {
 		return this.moveEmitter;
 	}
-	
-	public EventEmitter<Seaweed> getLandOnSeaweedEmitter(){
-		return this.landOnSeaweedEmitter;
-	}
 
 	public boolean checkWhaleInScreen() {
 		return y < (COVER_HEIGHT + h/2);
@@ -129,7 +121,7 @@ public class Whale extends Character {
 	// override collidesWith function exclusively for checking the collision between whale and platforms to cater for the whale tail
 	@Override
 	public boolean collidesWith(Character other) {
-		return (other.x + other.w >= x && other.y + other.h >= y && other.x <= x + w * 0.75 && other.y <= y + h);
+		return (other.x + other.w >= x && other.y + other.h >= y && other.x <= x + w / 2 && other.y <= y + h);
 	}
 
 	// if whale collides with seaweeds, the whale will stay on top of seaweeds
@@ -141,7 +133,7 @@ public class Whale extends Character {
 				landOnSeaweedEmitter.emit(seaweed);
 				}
 		} 
-	}
+			}
 
 	// find the list of seaweeds with y coordinate lower than whale
 	public ArrayList<Seaweed> findSeaweedBelowWhale(ArrayList<Seaweed> seaweeds, Whale whale) {
@@ -165,6 +157,14 @@ public class Whale extends Character {
 					&& (seaweed.y - seaweed.h >= this.y)
 //					&& (whale.y <= seaweed.y + seaweed.h)
 					);
+	}
+
+	public void toFront() {
+		this.toFront();
+	}
+
+	public EventEmitter<Seaweed> getLandOnSeaweedEmitter() {
+		return this.landOnSeaweedEmitter;
 	}
 
 }
