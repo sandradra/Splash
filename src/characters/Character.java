@@ -14,7 +14,7 @@ public abstract class Character{
 	public static final int COVER_WIDTH = 475;
 	public static final int COVER_HEIGHT = 600;
     
-    public Character(Pane layer,Image image, double x, double y, double dx, double dy) {
+    public Character(Pane layer,Image image, double x, double y) {
 
         this.layer = layer;
         this.image = image;
@@ -22,8 +22,8 @@ public abstract class Character{
         this.x = x;
         this.y = y;
         
-        this.dx = dx;
-        this.dy = dy;
+        this.dx = 0;
+        this.dy = 0;
 
         this.imageView = new ImageView(image);
         this.imageView.relocate(x, y);

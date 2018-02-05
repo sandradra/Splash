@@ -18,14 +18,18 @@ public class Driver extends Application {
 	public static final String GAME_TITLE = "Let's Splash!";
 	public static final String BACKGROUND_MUSIC = "resources/sounds/home.wav";
 	
+	public int music;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		
 		// play background music once application is launched
+		
 		Media backgroundMusic   = new Media(new File(BACKGROUND_MUSIC).toURI().toString());
 		MediaPlayer mediaPlayer = new MediaPlayer(backgroundMusic);
 		mediaPlayer.setOnEndOfMedia(new Runnable() { public void run() { mediaPlayer.seek(Duration.ZERO); }} );
 		mediaPlayer.play();
+
 
 		// create scenes
 		MyScene launchScene      = new LaunchScene();
@@ -36,10 +40,7 @@ public class Driver extends Application {
 		//---START OF HANDLING BUTTON CLICK---
 		
 		launchScene.getEventEmitter(LaunchScene.CLICKED_PLAY_BUTTON)
-		  .subscribe(event -> {
-//			  MyScene startGameScene   = new StartGameScene();
-			  primaryStage.setScene(startGameScene.getScene());
-		  });
+		  .subscribe(event -> primaryStage.setScene(startGameScene.getScene()));
 		
 		launchScene.getEventEmitter(LaunchScene.CLICKED_RANK_BUTTON)
 		  .subscribe(event -> primaryStage.setScene(leaderboardScene.getScene()));
@@ -57,6 +58,8 @@ public class Driver extends Application {
 		
 		endGameScene.getEventEmitter(LeaderboardScene.CLICKED_RANK_BUTTON)
 		  .subscribe(event -> primaryStage.setScene(leaderboardScene.getScene()));
+		
+//		TODO add event trigger to endGameScene
 		
 		//---END OF HANDLING BUTTON CLICK---
 		
