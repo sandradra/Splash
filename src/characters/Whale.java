@@ -140,10 +140,8 @@ public class Whale extends Character {
 				stopFall(); 
 				landOnSeaweedEmitter.emit(seaweed);
 				}
-				// call another method to drop whale when 
 		} 
 	}
-	
 
 	// find the list of seaweeds with y coordinate lower than whale
 	public ArrayList<Seaweed> findSeaweedBelowWhale(ArrayList<Seaweed> seaweeds, Whale whale) {
@@ -160,5 +158,13 @@ public class Whale extends Character {
 		return seaweedsBelowWhale;
 	}
 
+	// check if whale is on seaweed
+	public boolean onSeaweed (Seaweed seaweed) {
+		return ((seaweed.x <= this.x + this.w)
+					&& (this.x <= seaweed.x + seaweed.w)
+					&& (seaweed.y - seaweed.h >= this.y)
+//					&& (whale.y <= seaweed.y + seaweed.h)
+					);
+	}
 
 }

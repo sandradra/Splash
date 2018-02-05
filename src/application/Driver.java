@@ -31,7 +31,8 @@ public class Driver extends Application {
 		
 		launchScene.getEventEmitter(LaunchScene.CLICKED_PLAY_BUTTON)
 		  .subscribe(event -> {
-		  primaryStage.setScene(startGameScene.getScene());
+//			  MyScene startGameScene   = new StartGameScene();
+			  primaryStage.setScene(startGameScene.getScene());
 		  });
 		
 		launchScene.getEventEmitter(LaunchScene.CLICKED_RANK_BUTTON)
@@ -50,8 +51,6 @@ public class Driver extends Application {
 		
 		endGameScene.getEventEmitter(LeaderboardScene.CLICKED_RANK_BUTTON)
 		  .subscribe(event -> primaryStage.setScene(leaderboardScene.getScene()));
-		
-//		TODO add event trigger to endGameScene
 		
 		//---END OF HANDLING BUTTON CLICK---
 		
