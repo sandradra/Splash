@@ -37,7 +37,6 @@ public class Driver extends Application {
 		
 		launchScene.getEventEmitter(LaunchScene.CLICKED_PLAY_BUTTON)
 		  .subscribe(event -> {
-//			  MyScene startGameScene   = new StartGameScene();
 			  primaryStage.setScene(startGameScene.getScene());
 		  });
 		
